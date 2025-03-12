@@ -1,0 +1,13 @@
+Strategy,Fstatistic,Val,FctL95,FctU95
+Scenario 1,Fst,0.02491,0.01702,0.03487
+Scenario 2,Fst,0.02868,0.01961,0.04011
+Scenario 3,Fst,0.02394,0.01653,0.03326
+Scenario 4,Fst,0.02449,0.01679,0.03417
+Scenario 1,Fsc,0.01273,0.00799,0.02016
+Scenario 2,Fsc,0.0081,0.00423,0.0152
+Scenario 3,Fsc,0.01618,0.01051,0.02417
+Scenario 4,Fsc,0.00794,0.00399,0.01517
+Scenario 1,Fct,0.01234,0.0078,0.01814
+Scenario 2,Fct,0.02075,0.01318,0.03074
+Scenario 3,Fct,0.00788,0.00487,0.01153
+Scenario 4,Fct,0.01668,0.01057,0.02474
