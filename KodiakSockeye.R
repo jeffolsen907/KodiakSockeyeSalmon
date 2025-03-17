@@ -34,7 +34,6 @@ rm(list = ls())
 #Set print to 200 lines-----------------------------------------------------------------------------------------------------
 options(tibble.print_max = 200, tibble.print_min = 200)
 
-#Testing one, two, three
 
 
 # 1=PREPARE DATA------------------------------------------------------------------------------------------------------
@@ -1274,7 +1273,7 @@ dapc1_plot_12_ecotypes <- ggplot(dapc1NoRuthDF_12, aes(x = LD1, y = LD2, color =
 #Alternative DAPC plot of LD1 and LD2 grouped by habitat
 dapc1_plot_12_ecotypes <- ggplot(dapc1NoRuthDF_12, aes(x = LD1, y = LD2)) +
 #Data visualization  
-  geom_point(aes(colour = Lake, shape = Habitat)) +
+  geom_point(aes(colour = Lake, shape = Habitat, size = Habitat)) +
 #layout
   theme_bw() + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.ticks = element_blank(), axis.text.y = element_blank(), 
@@ -1289,7 +1288,7 @@ dapc1_plot_12_ecotypes <- ggplot(dapc1NoRuthDF_12, aes(x = LD1, y = LD2)) +
   #scale_shape_manual(values = c(17, 15, 18, 2, 0, 5, 6, 2, 5), labels = GrpLabNoRuth_Ecotype) +
   scale_shape_manual(values = c(0, 1, 2)) +
   #scale_size_manual(values = c(rep(0.75, 3), rep(0.25, 6)), labels = GrpLabNoRuth_Ecotype) +
-  scale_size_manual(values = c(rep(0.75, 3))) +
+  scale_size_manual(values = c(rep(1.0, 3))) +
   scale_linetype_manual(values = myColNoRuthLake_LakeTimeLines) +
   scale_y_continuous(limits = c(-4,4), name = "LD2") +
   scale_x_continuous(limits = c(-6,6), name = "LD1") +
