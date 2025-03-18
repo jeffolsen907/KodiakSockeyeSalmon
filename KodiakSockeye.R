@@ -1,6 +1,7 @@
 #Data analysis for Kodiak Sockeye Salmon study that examines the genetic outcome of the Frazer Lake introduction
 #Use base R and tidyverse functions
 
+#test 1,2,3
 
 # Open packages--------------------------------------------------------------------------------------------------------------
 library(adegenet)
