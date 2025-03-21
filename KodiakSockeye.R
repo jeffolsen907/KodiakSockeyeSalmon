@@ -1,7 +1,6 @@
 #Data analysis for Kodiak Sockeye Salmon study that examines the genetic outcome of the Frazer Lake introduction
 #Use base R and tidyverse functions
 
-#test 1,2,3
 
 # Open packages--------------------------------------------------------------------------------------------------------------
 library(adegenet)
@@ -18,7 +17,6 @@ library(hierfstat)
 library(MASS)
 library(mmod)
 library(pegas)
-#library(PopGenKit)
 library(poppr)
 library(RColorBrewer)
 library(reshape2)
@@ -1446,11 +1444,12 @@ input_structure <- read.table("KodiakClumppRev") %>%
   as_tibble() %>% 
   select(2,6:8) %>% 
   #rename columns - the order of donor populations is based on the Structure/clumpp output)
-  rename("Ind" = "V2", "RTE" = "V6", "RUL" =  "V7", "KBL" = "V8") %>% 
+  rename("Ind" = "V2", "Red\nTrib" = "V6", "Ruth\nOutlet" =  "V7", "Karluk\nBeach" = "V8") %>% 
   mutate("Pop" = substr(Ind, 1, 4)) %>% 
   mutate("Ecotype" = substr(Ind, 1, 3)) %>% 
   select("Ind", "Pop", "Ecotype", everything()) %>%
   filter(!(Ecotype %in% c("KBL", "RTE", "RUL"))) %>% 
+  mutate(Ecotype = recode(Ecotype, "FBM" = "Frazer Beach", "FOM" = "Frazer Outlet", "FTM" = "Frazer Tributary")) %>% 
   pivot_longer(-c(1,2,3), names_to = "Donor", values_to = "PostProb") 
 
 
@@ -1459,27 +1458,27 @@ ProportionSum <- group_by(input_structure, Ecotype, Donor) %>%
   pivot_wider(names_from = "Donor", values_from = "meanPostProb") %>% 
   mutate_if(is.double, round, 3)
 
-#Vector of donor names to use as header for plot of individual admixture proportion data
-DonorNames <- c("Red Lake Donor RTE31", "Ruth Lake Donor RUL33", "Karluk Lake Donor KBL13")
-names(DonorNames) <- c("RTE", "RUL", "KBL")
 
 # 4.15-FIGURE 8 : Boxplot of admixture proportions (Q) (from the three donor populations) for Frazer Lake samples grouped by ecotype----------------------------------------------------------------
 #box-whisker plot of individual Q values - admixture proportions.
-Figure8 <- ggplot(input_structure, aes(x = Ecotype, y = PostProb)) +
+Figure8 <- ggplot(input_structure, aes(x = Donor, y = PostProb)) +
   #Data visualization  
-  geom_boxplot(varwidth = TRUE, linewidth = 0.25) +
+  geom_boxplot(varwidth = TRUE, linewidth = 0.15, outlier.size = 0.75) +
   #geom_jitter(width=0.05, alpha=0.5) +
   #geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
-  stat_summary(fun = mean, geom="point", shape=15, size=2, fill="black") +
+  stat_summary(fun = mean, geom="point", shape=15, size=1.5, fill="black") +
   #layout
   theme_bw() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_rect(fill="gray")) +
-  scale_y_continuous(limits = c(0,1.0)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(size = 0.25), 
+        strip.background = element_rect(fill="gray90", size = 0.25), axis.title = element_text(size = 10), axis.text = element_text(size = 7)) +
   #overides
+  scale_y_continuous(limits = c(0, 1.0)) +
   ylab("Individual Admixture Proportion (Q)") +
-  xlab("Frazer Lake Ecotype") +
-  facet_grid(. ~ Donor, scales = "free_x", space = "free", labeller = labeller(Donor = DonorNames))
+  xlab("Donor") +
+  #facet_grid(. ~ factor(Ecotype, levels = c("FBM", "FTM", "FOM")), scales = "free_x", space = "free", labeller = labeller(FrazerEcotypes))
+  facet_grid(. ~ factor(Ecotype, levels = c("Frazer Beach", "Frazer Tributary", "Frazer Outlet")), scales = "free_x", space = "free")
 
+  
 #Print FIGURE 8 to directory
 #Boxplot
 ggsave(filename = "Figure8_FrazerPaper.tiff", plot = Figure8, device = "tiff",
