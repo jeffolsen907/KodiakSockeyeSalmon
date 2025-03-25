@@ -968,7 +968,7 @@ Figure4a <- ggplot(MDSFst, aes(x = Dimension_1, y = Dimension_2, color = Lake, s
   #scale_shape_manual(values = c(17, 15, 18, 2, 0, 5, 6, 2, 5, 5)) +
   #scale_shape_manual(values = c(0, 1, 2, 0, 1, 2, 6, 0, 2, 1)) +
   #scale_shape_manual(values = c(0, 1, 2, 0, 1, 2, 0, 2, 1)) +
-  scale_shape_manual(values = c(0, 1, 2)) +
+  scale_shape_manual(values = c(5, 2, 1)) +
   scale_y_continuous(limits = c(-0.04,0.05), breaks = seq(-0.04,0.05,0.02), name = "Dimension 2") +
   scale_x_continuous(limits = c(-0.04,0.06), breaks = seq(-0.04,0.06,0.02), name = "Dimension 1") +
   #scale_y_continuous(limits = c(-0.02,0.02), breaks = seq(-0.02,0.02,0.01), name = "Dimension 2") +
@@ -1041,7 +1041,7 @@ Figure4b <- ggplot(MDSFstNo1004, aes(x = Dimension_1, y = Dimension_2, color = L
   #scale_shape_manual(values = c(rep(19,3), rep(2,4), rep(5,3), 25)) +
   #scale_shape_manual(values = c(17, 15, 18, 2, 0, 5, 6, 2, 5, 5)) +
   #scale_shape_manual(values = c(0, 1, 2, 0, 1, 2, 6, 0, 2, 1)) +
-  scale_shape_manual(values = c(0, 1, 2)) +
+  scale_shape_manual(values = c(5, 2, 1)) +
   #scale_y_reverse(limits = c(0.05,-0.04), breaks = seq(-0.04,0.05,0.01), name = "Dimension 2") +
   scale_y_continuous(limits = c(-0.04,0.05), breaks = seq(-0.04,0.05,0.02), name = "Dimension 2") +
   scale_x_continuous(limits = c(-0.04,0.06), breaks = seq(-0.04,0.06,0.02), name = "Dimension 1") +
@@ -1109,7 +1109,7 @@ write.table(TableAmova, "Table2_FrazerPaper.txt", quote=FALSE,row.names=F,col.na
 
 # 4.7-FIGURE 5: Bar plot of first level AMOVA results-------------------------------------------------------------
 #Did not include Group G3 in paper. Used G1, G2, G4 only.
-StratNames <- c("Scenario 1:   Fra(t)&Red    Fra(b)&Kar", "Scenario 2:   Fra&Red    Kar", "Scenario 3:   Fra   Red   Kar")
+StratNames <- c("Two Groups:   F(t)+R    F(b)+K", "Two Groups:   F+R    K", "Three Groups:   F   R   K")
 names(StratNames) <- c("Scenario 1", "Scenario 2", "Scenario 4")
 
 Figure5 <- ggplot(Kodiak_AMOVA) +
@@ -1117,8 +1117,8 @@ Figure5 <- ggplot(Kodiak_AMOVA) +
   geom_bar(aes(x = Fstatistic, y = Val), stat = "identity", fill = "gray70", color = "black", size = 0.15) + 
   #Layout
   theme_bw() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_rect(fill="gray90", size = 0.25), 
-        panel.border = element_rect(linewidth = 0.25), legend.position = "none", axis.title = element_text(size = 10), 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_rect(fill="gray90", linewidth = 0.15), 
+        panel.border = element_rect(linewidth = 0.15), legend.position = "none", axis.title = element_text(size = 10), 
         axis.text = element_text(size = 7)) +
   #overrides
   scale_y_continuous(limits = c(0,0.035)) +
@@ -1160,7 +1160,7 @@ Kodiak_AMOVA_InLakes <- read_csv("KodiakAMOVA_WithinLakes.csv") %>%
 
 Figure6 <- ggplot(Kodiak_AMOVA_InLakes) + 
 #Data visualization
-  geom_bar(aes(Fstatistic, Val), fill = "gray", color = "black", position = 'dodge',  stat = 'identity') + 
+  geom_bar(aes(Fstatistic, Val), fill = "gray70", color = "black", position = 'dodge',  stat = 'identity', size = 0.15) + 
   #scale_fill_manual(values = c("black", "gray", "white")) +
 #layout
   theme_bw() + 
@@ -1171,9 +1171,9 @@ Figure6 <- ggplot(Kodiak_AMOVA_InLakes) +
   scale_x_discrete(limits = c("Fst", "Fsc", "Fct")) +
   geom_text(aes(Fstatistic, Val, label=sprintf('%.3f',Val)), vjust=-0.35, size = 2.5) +
   geom_text(aes(Fstatistic, Val, label = ifelse(Signif == "ns", "", Signif)), vjust = -1.0, hjust = -3.5, size = 2) +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        axis.title = element_text(size=10), axis.text = element_text(size=8), 
-        plot.title = element_text(size=12, vjust = 0, hjust = 0.05), legend.position = "none") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(linewidth = 0.15),
+        strip.background = element_rect(fill="gray90", linewidth = 0.15),axis.title = element_text(size=10), 
+        axis.text = element_text(size=7), plot.title = element_text(size=12, vjust = 0, hjust = 0.05), legend.position = "none") +
   facet_wrap(~factor(Lake, levels = c("Frazer Lake ecotypes", "Karluk Lake ecotypes", "Red Lake ecotypes")), ncol = 1)
 
 #creates a high resolution TIFF file for publication
@@ -1226,7 +1226,7 @@ dapc1NoRuthDF_12_Frazer <- filter(dapc1NoRuthDF_12, str_detect(Ind, "FTM|FBM|FOM
 #Dataframe of LD coordinates 1 and 2 without Frazer Lake individuals
 dapc1NoRuthDF_12_NoFrazer <- filter(dapc1NoRuthDF_12, !str_detect(Ind, "FTM|FBM|FOM"))
 #Dataframe of LD coordinates 1 and 2 for each ecotype group
-dapc1NoRuthDFgroup_12 = as_tibble(dapc1NoRuth$grp.coord[,1:2], rownames = "Ecotype") %>% 
+dapc1NoRuthDFgroup_12 = as_tibble(dapc1NoRuth$grp.coord[,1:2], rownames = "Ecotype")
 
   
 #OPTIONAL - Dataframe of LD coordinates 2 and 3 for each individual
@@ -1293,7 +1293,7 @@ dapc1_plot_12_ecotypes <- ggplot(dapc1NoRuthDF_12, aes(x = LD1, y = LD2)) +
   scale_color_manual(values = myColNoRuthLake) +
   #scale_shape_manual(values = c(rep(19,3), rep(2,4), rep(5,2)), labels = GrpLabNoRuth_Ecotype) +
   #scale_shape_manual(values = c(17, 15, 18, 2, 0, 5, 6, 2, 5), labels = GrpLabNoRuth_Ecotype) +
-  scale_shape_manual(values = c(0, 1, 2)) +
+  scale_shape_manual(values = c(5, 2, 1)) +
   #scale_size_manual(values = c(rep(0.75, 3), rep(0.25, 6)), labels = GrpLabNoRuth_Ecotype) +
   scale_size_manual(values = c(rep(1.0, 3))) +
   scale_linetype_manual(values = myColNoRuthLake_LakeTimeLines) +
@@ -1478,7 +1478,7 @@ Figure8 <- ggplot(input_structure, aes(x = Donor, y = PostProb)) +
   #layout
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.border = element_rect(size = 0.25), 
-        strip.background = element_rect(fill="gray90", size = 0.25), axis.title = element_text(size = 10), axis.text = element_text(size = 7)) +
+        strip.background = element_rect(fill="gray90", size = 0.15), axis.title = element_text(size = 10), axis.text = element_text(size = 7)) +
   #overides
   scale_y_continuous(limits = c(0, 1.0)) +
   ylab("Individual Admixture Proportion (Q)") +
@@ -1486,11 +1486,12 @@ Figure8 <- ggplot(input_structure, aes(x = Donor, y = PostProb)) +
   #facet_grid(. ~ factor(Ecotype, levels = c("FBM", "FTM", "FOM")), scales = "free_x", space = "free", labeller = labeller(FrazerEcotypes))
   facet_grid(. ~ factor(Ecotype, levels = c("Frazer Beach", "Frazer Tributary", "Frazer Outlet")), scales = "free_x", space = "free")
 
-  
+
 #Print FIGURE 8 to directory
 #Boxplot
 ggsave(filename = "Figure8_FrazerPaper.tiff", plot = Figure8, device = "tiff",
        height = 4, width = 6, units="in", dpi=200)
+
 
 # 4.16-Alternative test of donor contribution to Frazer Lake collections Using DAPC and supplementary individuals-----------------------------------------------------------------
 input_NucMtDNA_GoL <- readRDS("input_NucMtDNA_GoL.rds")
