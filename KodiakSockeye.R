@@ -102,7 +102,7 @@ KodiakCollections <- read_csv("KodiakCollections.csv", col_types = strrep("c", 1
          Map_Code = replace(Map_Code, Map_Code == "31", "31d"),
          Map_Code = replace(Map_Code, Map_Code == "33", "33d"))%>% 
   rename("Lake" = "Drainage", "Group" = "Code", "Timing" = "Spawn_Time", "Habitat" = "Habitat_Type", "ColNo" = "Map_Code") %>% 
-  select(Lake, Location, everything())
+  select(Lake, Location, ColNo, Habitat, Timing, N, Date, Lat, Long)
 write.table(KodiakCollections,"FrazerTable1.txt",quote=FALSE,row.names=F,col.names=T, sep = ',')
 
 
@@ -783,7 +783,7 @@ PW_Gtest$Pop2 <- factor(PW_Gtest$Pop2, levels = PopOrder2)
 PW_Gtest <- arrange(PW_Gtest, Pop2, Pop1) %>% 
   mutate(Pop1Pop2 = paste(Pop1,Pop2, sep=""))
 
-SigTests <- count(PW_Gtest, PW_Pval <= 0.05)#not used in heatmap
+SigTests <- count(PW_Gtest, GtestPval <= 0.05)#not used in heatmap
 
 
 # 4.2-Pairwise Fst among all collections---------------------------------------------------------------------
@@ -838,7 +838,9 @@ FstGtest <- left_join(WCpw_melt, PW_Gtest, by = c("Pop1Pop2"), keep = FALSE) %>%
   rename("Pop1" = "Pop1.x", "Pop2" = "Pop2.x") %>% 
   select(Pop1, Pop2, Fst, GtestSig) %>% 
   #pivot_longer(-c(1,2), names_to = "testN", values_to = "val") %>% 
-  mutate(Pop1n = as.integer(substr(Pop1,4,5)), Pop2n = as.integer(substr(Pop2,4,5)))
+  mutate(Pop1n = as.integer(substr(Pop1,4,5)), Pop2n = as.integer(substr(Pop2,4,5))) %>%  
+  mutate(Pop1 = as_factor(str_replace_all(Pop1, c("M" = "", "E" = "", "L" = "", "U" = "O")))) %>% 
+  mutate(Pop2 = as_factor(str_replace_all(Pop2, c("M" = "", "E" = "", "L" = "", "U" = "O"))))
 
 #this code is used to compute mean and range of Fst values within and among lakes
 UniqFstGtest <- filter(FstGtest, Pop1n < Pop2n) %>% 
@@ -885,31 +887,34 @@ Figure3 <- ggplot(mapping = aes(Pop1, Pop2)) +
   scale_y_discrete(limits = rev(levels(factor(FstGtest$Pop2)))) +
   annotate("text", x = 1:32, y = 32:1, label = "-", size = 2) + 
   annotate("text", x = 1:32 + 0, y = c(32:1) + 1.5, label = unique(FstGtest$Pop1), size = 3.5, angle = 90) +
-  #  annotate("text", x = inputM_melt$Pop1, y = inputM_melt$Pop2, label = inputM_melt$sig, size = 2) +  
-  geom_segment(data = FstGtest, aes(x = 4, xend = 11, y = 32 + 0.5, yend = 25 + 0.5), 
-               color = "black", linewidth = 0.5, linetype = 2) +
+  #annotate("text", x = inputM_melt$Pop1, y = inputM_melt$Pop2, label = inputM_melt$sig, size = 2) +  
+  #geom_segment(data = FstGtest, aes(x = 4, xend = 11, y = 32 + 0.5, yend = 25 + 0.5), 
+               #color = "black", linewidth = 0.5, linetype = 2) +
   #geom_segment(data = FstGtest, aes(x = 1 - 0.5, xend = 1 - 0.5, y = 22 + 0.5, yend = 32 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +
   #geom_segment(data = FstGtest, aes(x = 1 - 0.5, xend = 10 + 0.5, y = 22 + 0.5, yend = 22 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +
   #geom_rect(data = FstGtest, aes(xmin = 1 - 0.5, xmax = 10 + 0.5, ymin = 32 + 0.5, ymax = 22 + 0.5),
             #fill = "transparent", color = "black", linewidth = 0.25, linetype = 2) +
-  geom_segment(data = FstGtest, aes(x = 13, xend = 26, y = 23 + 0.5, yend = 10 + 0.5), 
-               color = "black", linewidth = 0.5, linetype = 2) +
+  #geom_segment(data = FstGtest, aes(x = 13, xend = 26, y = 23 + 0.5, yend = 10 + 0.5), 
+               #color = "black", linewidth = 0.5, linetype = 2) +
   #geom_segment(data = FstGtest, aes(x = 11 - 0.5, xend = 11 - 0.5, y = 7 + 0.5, yend = 22 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +
   #geom_segment(data = FstGtest, aes(x = 11 - 0.5, xend = 25 + 0.5, y = 7 + 0.5, yend = 7 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +  
   #geom_rect(data = FstGtest, aes(xmin = 11 - 0.5, xmax = 25 + 0.5, ymin = 22 + 0.5, ymax = 7 + 0.5),
             #fill = "transparent", color = "black", linewidth = 0.25, linetype = 2) +
-  geom_segment(data = FstGtest, aes(x = 28, xend = 32, y = 8 + 0.5, yend = 4 + 0.5), 
-               color = "black", linewidth = 0.5, linetype = 2) +
+  #geom_segment(data = FstGtest, aes(x = 28, xend = 32, y = 8 + 0.5, yend = 4 + 0.5), 
+               #color = "black", linewidth = 0.5, linetype = 2) +
   #geom_segment(data = FstGtest, aes(x = 26 - 0.5, xend = 26 - 0.5, y = 1 + 0.5, yend = 7 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +
   #geom_segment(data = FstGtest, aes(x = 26 - 0.5, xend = 31 + 0.5, y = 1 + 0.5, yend = 1 + 0.5), 
                #color = "black", linewidth = 0.5, linetype = 1) +    
   #geom_rect(data = FstGtest, aes(xmin = 26 - 0.5, xmax = 31 + 0.5, ymin = 7 + 0.5, ymax = 1 + 0.5),
             #fill = "transparent", color = "black", linewidth = 0.25, linetype = 2) +
+  annotate("segment", x = 4, xend = 11, y = 32 + 0.5, yend = 25 + 0.5, color = "black", linewidth = 0.5, linetype = "dashed") +
+  annotate("segment", x = 13, xend = 26, y = 23 + 0.5, yend = 10 + 0.5, color = "black", linewidth = 0.5, linetype = "dashed") +
+  annotate("segment", x = 28, xend = 32, y = 8 + 0.5, yend = 4 + 0.5, color = "black", linewidth = 0.5, linetype = "dashed") +
   annotate("text", x = 8.5 + 0.5, y = 30, label = "Frazer", size = 6) + 
   annotate("text", x = 22 + 0.5, y = 17, label = "Karluk", size = 6) +  
   annotate("text", x = 31 + 0.5, y = 7, label = "Red", size = 6)
@@ -1104,15 +1109,17 @@ write.table(TableAmova, "Table2_FrazerPaper.txt", quote=FALSE,row.names=F,col.na
 
 # 4.7-FIGURE 5: Bar plot of first level AMOVA results-------------------------------------------------------------
 #Did not include Group G3 in paper. Used G1, G2, G4 only.
-StratNames <- c("Scenario 1\nRed+Fra(t)    Kar+Fra(b)", "Scenario 2\nRed+Fra    Kar", "Scenario 3\nFra   Red   Kar")
+StratNames <- c("Scenario 1:   Fra(t)&Red    Fra(b)&Kar", "Scenario 2:   Fra&Red    Kar", "Scenario 3:   Fra   Red   Kar")
 names(StratNames) <- c("Scenario 1", "Scenario 2", "Scenario 4")
 
 Figure5 <- ggplot(Kodiak_AMOVA) +
   #Data visualization
-  geom_bar(aes(x = Fstatistic, y = Val), stat = "identity", fill = "gray", color = "black") + 
+  geom_bar(aes(x = Fstatistic, y = Val), stat = "identity", fill = "gray70", color = "black", size = 0.15) + 
   #Layout
   theme_bw() +
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = "none") +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_rect(fill="gray90", size = 0.25), 
+        panel.border = element_rect(linewidth = 0.25), legend.position = "none", axis.title = element_text(size = 10), 
+        axis.text = element_text(size = 7)) +
   #overrides
   scale_y_continuous(limits = c(0,0.035)) +
   scale_x_discrete(limits = c("Fst", "Fsc", "Fct")) +
@@ -1120,6 +1127,7 @@ Figure5 <- ggplot(Kodiak_AMOVA) +
   geom_text(aes(Fstatistic, Val, label = "*"), vjust = -1.0, hjust = -3.5, size = 2) +
   #geom_errorbar(aes(x = Fstatistic, ymin=FctL95, ymax=FctU95), width = 0.15) +
   facet_wrap(~Strategy, ncol = 1, labeller = labeller(Strategy = StratNames))
+
 
 #Print FIGURE 5 to directory
 ggsave(filename = "Figure5_FrazerPaper.tiff", plot = Figure5, device = "tiff",
