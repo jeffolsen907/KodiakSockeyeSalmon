@@ -839,8 +839,8 @@ FstGtest <- left_join(WCpw_melt, PW_Gtest, by = c("Pop1Pop2"), keep = FALSE) %>%
   select(Pop1, Pop2, Fst, GtestSig) %>% 
   #pivot_longer(-c(1,2), names_to = "testN", values_to = "val") %>% 
   mutate(Pop1n = as.integer(substr(Pop1,4,5)), Pop2n = as.integer(substr(Pop2,4,5))) %>%  
-  mutate(Pop1 = as_factor(str_replace_all(Pop1, c("M" = "", "E" = "", "L" = "", "U" = "O")))) %>% 
-  mutate(Pop2 = as_factor(str_replace_all(Pop2, c("M" = "", "E" = "", "L" = "", "U" = "O"))))
+  mutate(Pop1 = as_factor(str_replace_all(Pop1, c("M" = "", "E" = "", "L" = "", "RU" = "UO")))) %>% 
+  mutate(Pop2 = as_factor(str_replace_all(Pop2, c("M" = "", "E" = "", "L" = "", "RU" = "UO"))))
 
 #this code is used to compute mean and range of Fst values within and among lakes
 UniqFstGtest <- filter(FstGtest, Pop1n < Pop2n) %>% 
@@ -1109,12 +1109,12 @@ write.table(TableAmova, "Table2_FrazerPaper.txt", quote=FALSE,row.names=F,col.na
 
 # 4.7-FIGURE 5: Bar plot of first level AMOVA results-------------------------------------------------------------
 #Did not include Group G3 in paper. Used G1, G2, G4 only.
-StratNames <- c("Two Groups:   F(t)+R    F(b)+K", "Two Groups:   F+R    K", "Three Groups:   F   R   K")
+StratNames <- c("Scenario 1", "Scenario 2", "Scenario 3")
 names(StratNames) <- c("Scenario 1", "Scenario 2", "Scenario 4")
 
 Figure5 <- ggplot(Kodiak_AMOVA) +
   #Data visualization
-  geom_bar(aes(x = Fstatistic, y = Val), stat = "identity", fill = "gray70", color = "black", size = 0.15) + 
+  geom_bar(aes(x = Fstatistic, y = Val), stat = "identity", fill = "gray70", color = "black", linewidth = 0.15) + 
   #Layout
   theme_bw() +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_rect(fill="gray90", linewidth = 0.15), 
